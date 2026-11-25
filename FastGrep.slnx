@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FastGrep.Cli/FastGrep.Cli.csproj" />
+    <Project Path="src/FastGrep.Core/FastGrep.Core.csproj" />
+    <Project Path="src/FastGrep.Desktop/FastGrep.Desktop.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FastGrep.Tests/FastGrep.Tests.csproj" />
+  </Folder>
+</Solution>

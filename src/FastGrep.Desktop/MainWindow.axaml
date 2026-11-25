@@ -1,0 +1,251 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="FastGrep.Desktop.MainWindow" Title="FastGrep" Icon="/Assets/app-icon.ico" Width="1280" Height="820"
+        MinWidth="1120" MinHeight="720" FontSize="11" Background="#F3F5F7">
+  <Window.Styles>
+    <Style Selector="TabControl"><Setter Property="Background" Value="White"/></Style>
+    <Style Selector="TabItem"><Setter Property="FontSize" Value="11"/><Setter Property="Padding" Value="9,7"/><Setter Property="Foreground" Value="#4B5563"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/><Setter Property="VerticalContentAlignment" Value="Stretch"/></Style>
+    <Style Selector="Button"><Setter Property="FontSize" Value="11"/><Setter Property="MinHeight" Value="25"/><Setter Property="Padding" Value="9,3"/><Setter Property="CornerRadius" Value="4"/></Style>
+    <Style Selector="Button.primary"><Setter Property="Background" Value="#1677FF"/><Setter Property="Foreground" Value="White"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+    <Style Selector="Button.danger"><Setter Property="Foreground" Value="#C9362B"/></Style>
+    <Style Selector="Button.compact"><Setter Property="MinWidth" Value="28"/><Setter Property="Padding" Value="4,2"/></Style>
+    <Style Selector="TextBox"><Setter Property="FontSize" Value="11"/><Setter Property="MinHeight" Value="23"/><Setter Property="Padding" Value="6,0"/><Setter Property="VerticalContentAlignment" Value="Center"/><Setter Property="CornerRadius" Value="4"/></Style>
+    <Style Selector="TextBox:not(.multiline)"><Setter Property="Height" Value="23"/></Style>
+    <Style Selector="CheckBox"><Setter Property="FontSize" Value="11"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="RadioButton"><Setter Property="FontSize" Value="11"/><Setter Property="VerticalAlignment" Value="Center"/></Style>
+    <Style Selector="ComboBox"><Setter Property="FontSize" Value="11"/><Setter Property="MinHeight" Value="25"/><Setter Property="CornerRadius" Value="4"/></Style>
+    <Style Selector="GroupBox"><Setter Property="FontSize" Value="11"/><Setter Property="Margin" Value="0"/><Setter Property="Padding" Value="8,5,8,7"/></Style>
+    <Style Selector="Border.card"><Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="#DDE2E7"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="8"/></Style>
+    <Style Selector="Border.sidebar"><Setter Property="Background" Value="#F8FAFC"/><Setter Property="BorderBrush" Value="#DDE2E7"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="6"/><Setter Property="Padding" Value="10"/></Style>
+    <Style Selector="TextBlock.sectionTitle"><Setter Property="FontSize" Value="12"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Foreground" Value="#1F2937"/></Style>
+    <Style Selector="TextBlock.muted"><Setter Property="Foreground" Value="#6B7280"/></Style>
+    <Style Selector="TextBlock.caption"><Setter Property="VerticalAlignment" Value="Center"/><Setter Property="Margin" Value="0,0,5,0"/></Style>
+    <Style Selector="TextBox.metric"><Setter Property="MinWidth" Value="0"/><Setter Property="Width" Value="60"/><Setter Property="IsReadOnly" Value="True"/><Setter Property="HorizontalContentAlignment" Value="Right"/></Style>
+    <Style Selector="TextBox.number"><Setter Property="MinWidth" Value="0"/><Setter Property="Width" Value="60"/><Setter Property="HorizontalContentAlignment" Value="Right"/></Style>
+    <Style Selector="TextBox.compactInput"><Setter Property="MinWidth" Value="0"/></Style>
+    <Style Selector="Label.metricLabel"><Setter Property="FontSize" Value="11"/><Setter Property="Height" Value="23"/><Setter Property="Padding" Value="6,0"/><Setter Property="Background" Value="#EEF2F6"/><Setter Property="CornerRadius" Value="4"/><Setter Property="HorizontalContentAlignment" Value="Right"/><Setter Property="VerticalContentAlignment" Value="Center"/></Style>
+    <Style Selector="TextBox.multiline">
+      <Setter Property="AcceptsReturn" Value="True"/><Setter Property="AcceptsTab" Value="True"/>
+      <Setter Property="TextWrapping" Value="Wrap"/><Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible"/>
+      <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/><Setter Property="ScrollViewer.AllowAutoHide" Value="False"/>
+      <Setter Property="VerticalContentAlignment" Value="Top"/>
+      <Setter Property="HorizontalContentAlignment" Value="Left"/><Setter Property="Padding" Value="4"/>
+    </Style>
+    <Style Selector="ListBox.fileList">
+      <Setter Property="Background" Value="White"/><Setter Property="BorderBrush" Value="#7A7A7A"/>
+      <Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="4"/>
+      <Setter Property="Padding" Value="2"/><Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Visible"/>
+      <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+      <Setter Property="ScrollViewer.AllowAutoHide" Value="False"/>
+    </Style>
+    <Style Selector="ListBox.fileList ListBoxItem">
+      <Setter Property="Padding" Value="3,1"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+    </Style>
+    <Style Selector="ListBox.fileList ListBoxItem TextBlock">
+      <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+  </Window.Styles>
+  <Grid Margin="14" ColumnDefinitions="*,*" ColumnSpacing="14">
+    <Border Grid.Column="0" Classes="card" Padding="0,5">
+    <TabControl x:Name="MainTabs">
+      <TabItem Header="单文件处理">
+        <StackPanel Margin="0,3">
+          <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="6">
+            <TextBlock Classes="caption" Text="待处理文件："/><TextBox Grid.Column="1" x:Name="SingleFile"/>
+            <Button Grid.Column="2" Content="..." Click="PickSingleFile_Click"/>
+          </Grid>
+          <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,3,0,4">
+            <TextBlock Classes="caption" Text="文件大小(K字节)："/><TextBox Classes="metric" x:Name="SingleFileSize" Text="0"/>
+            <TextBlock Classes="caption" Text="当前文件的大小。"/>
+          </StackPanel>
+          <GroupBox Header="提取超大文件部分内容" Margin="0,0,0,2"><StackPanel Margin="4" Spacing="2">
+            <StackPanel Orientation="Horizontal" Spacing="4"><TextBlock Classes="caption" Text="读取大小："/><TextBox Classes="number" Width="54" x:Name="SingleReadSize" Text="1024"/><TextBlock Classes="caption" Text="KB"/>
+              <Button Content="读文件头部" Click="SingleReadHead_Click"/><Button Content="读文件尾部" Click="SingleReadTail_Click"/>
+              <TextBlock Classes="caption" Text="起点："/><TextBox Classes="number" Width="44" x:Name="SingleReadStart" Text="0"/><TextBlock Classes="caption" Text="KB"/><Button Content="读文件中间" Click="SingleReadMiddle_Click"/></StackPanel>
+            <TextBlock Text="读文件中间时，从【起点】开始，读【读取大小（KB）】长度；不足时读取所有。"/>
+          </StackPanel></GroupBox>
+          <StackPanel Orientation="Horizontal" Spacing="12">
+            <StackPanel Orientation="Horizontal" Spacing="6"><TextBlock Classes="caption" Text="读队列"/><TextBox Classes="metric" Width="48" x:Name="SingleReadQueue" Text="0"/></StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="6"><TextBlock Classes="caption" Text="写队列"/><TextBox Classes="metric" Width="48" x:Name="SingleWriteQueue" Text="0"/></StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="6"><TextBlock Classes="caption" Text="初始线程"/><TextBox Classes="number" Width="42" x:Name="SingleWorkers" Text="16"/></StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="6"><TextBlock Classes="caption" Text="当前线程"/><TextBox Classes="metric" Width="42" x:Name="SingleCurrentWorkers" Text="0"/><Button Classes="compact" Content="+" Click="SingleWorkerAdd_Click"/><Button Classes="compact" Content="−" Click="SingleWorkerSub_Click"/></StackPanel>
+          </StackPanel>
+          <Grid Margin="0,3" ColumnDefinitions="Auto,78,Auto,78,Auto,78,Auto,78" ColumnSpacing="4">
+            <TextBlock Classes="caption" Text="读速："/><Label Grid.Column="1" Classes="metricLabel" x:Name="SingleReadSpeed" Content="0"/>
+            <TextBlock Grid.Column="2" Classes="caption" Margin="2,0,5,0" Text="已读："/><Label Grid.Column="3" Classes="metricLabel" x:Name="SingleReadTotal" Content="0"/>
+            <TextBlock Grid.Column="4" Classes="caption" Margin="2,0,5,0" Text="计算速："/><Label Grid.Column="5" Classes="metricLabel" x:Name="SingleComputeSpeed" Content="0"/>
+            <TextBlock Grid.Column="6" Classes="caption" Margin="2,0,5,0" Text="已计算："/><Label Grid.Column="7" Classes="metricLabel" x:Name="SingleComputeTotal" Content="0"/>
+          </Grid>
+          <GroupBox Header="计算模式选择" Margin="0,0,0,2"><StackPanel Margin="4" Orientation="Horizontal" Spacing="18">
+            <RadioButton GroupName="singleMode" x:Name="SingleModeLineBlock" Content="行块模式（大量关键字）"/>
+            <RadioButton GroupName="singleMode" x:Name="SingleModeTextBlock" Content="字符块模式（少量关键字）" IsChecked="True"/>
+            <RadioButton GroupName="singleMode" x:Name="SingleModeLine" Content="单行模式（平衡型）"/>
+          </StackPanel></GroupBox>
+          <GroupBox Header="搜索内容（读文件单线程，计算可多线程）" Margin="0,0,0,2"><StackPanel Margin="4" Spacing="2">
+            <Grid ColumnDefinitions="Auto,*,Auto"><RadioButton GroupName="singleKeyword" x:Name="SingleKeywordTextMode" Content="搜索文本框中的关键字：" IsChecked="True"/><TextBox Grid.Column="1" x:Name="SingleKeywordText" Text="test"/></Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto"><RadioButton GroupName="singleKeyword" x:Name="SingleKeywordFileMode" Content="搜索文件中的关键字："/><TextBox Grid.Column="1" x:Name="SingleKeywordFile"/><Button Grid.Column="2" Content="..." Click="PickSingleKeywordFile_Click"/></Grid>
+            <Grid ColumnDefinitions="*,Auto,Auto,Auto,Auto" ColumnSpacing="8"><CheckBox x:Name="SingleIgnoreCase" Content="忽略大小写" IsChecked="True"/><TextBlock Grid.Column="1" Classes="caption" Text="当前状态："/><TextBox Grid.Column="2" Width="85" x:Name="SingleSearchStatus" Text="已停止" IsReadOnly="True"/><Button Grid.Column="3" Classes="primary" Content="开始搜索" Click="SingleSearch_Click"/><Button Grid.Column="4" Classes="danger" Content="停止搜索" Click="SingleStop_Click"/></Grid>
+          </StackPanel></GroupBox>
+          <GroupBox Header="文件内容清理（读写单线程，计算可多线程）" Margin="0"><StackPanel Margin="4" Spacing="2">
+            <Grid ColumnDefinitions="Auto,*,Auto"><TextBlock Classes="caption" Text="结果保存文件："/><TextBox Grid.Column="1" x:Name="SingleCleanOutput"/><Button Grid.Column="2" Content="..." Click="PickSingleCleanOutput_Click"/></Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto"><CheckBox x:Name="SingleRemovePrefixOn" Content="删除指定开头的行(精确)："/><TextBox Grid.Column="1" x:Name="SingleRemovePrefix"/><CheckBox Grid.Column="2" x:Name="SinglePrefixIgnoreCase" Content="忽略大小写" IsChecked="True"/></Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto"><CheckBox x:Name="SingleRemoveContainsOn" Content="删除包含内容的行(精确)："/><TextBox Grid.Column="1" x:Name="SingleRemoveContains"/><CheckBox Grid.Column="2" x:Name="SingleContainsIgnoreCase" Content="忽略大小写" IsChecked="True"/></Grid>
+            <Grid ColumnDefinitions="Auto,*"><CheckBox x:Name="SingleRemoveRegexOn" Content="删除正则匹配行(比较慢)："/><TextBox Grid.Column="1" x:Name="SingleRemoveRegex"/></Grid>
+            <Grid ColumnDefinitions="Auto,Auto,32,Auto,64,*" ColumnSpacing="8"><CheckBox x:Name="SingleRemoveFieldsOn" Content="删除分隔后的字段："/><TextBlock Grid.Column="1" Classes="caption" Text="分隔符："/><TextBox Grid.Column="2" Classes="compactInput" Width="32" x:Name="SingleSeparator" Text=":"/><TextBlock Grid.Column="3" Classes="caption" Text="列号（可多个）："/><TextBox Grid.Column="4" Classes="compactInput" Width="64" x:Name="SingleFields" Text="1,3,5"/></Grid>
+            <Grid ColumnDefinitions="Auto,50,*,Auto"><CheckBox x:Name="SingleShortOn" Content="删除短行，长度小于等于：" IsChecked="True"/><TextBox Grid.Column="1" Classes="compactInput" Width="50" x:Name="SingleShort" Text="5"/><TextBlock Grid.Column="2"/><CheckBox Grid.Column="3" x:Name="SingleInnerWhitespace" Content="删除行中间空白"/></Grid>
+            <Grid ColumnDefinitions="Auto,Auto,*,Auto,70,Auto,Auto" ColumnSpacing="6"><CheckBox x:Name="SingleBlank" Content="删除空行" IsChecked="True"/><CheckBox Grid.Column="1" x:Name="SingleTrim" Content="删除行头尾空白" IsChecked="True"/><TextBlock Grid.Column="3" Classes="caption" Text="当前状态："/><TextBox Grid.Column="4" Width="70" x:Name="SingleCleanStatus" Text="已停止" IsReadOnly="True"/><Button Grid.Column="5" Classes="primary" Content="开始清理" Click="SingleClean_Click"/><Button Grid.Column="6" Classes="danger" Content="停止清理" Click="SingleStop_Click"/></Grid>
+          </StackPanel></GroupBox>
+        </StackPanel>
+      </TabItem>
+
+      <TabItem Header="多文件搜索">
+        <Grid Margin="0,8" RowDefinitions="Auto,Auto,Auto,*,Auto" ColumnDefinitions="*,154" RowSpacing="7" ColumnSpacing="10">
+          <GroupBox Header="搜索内容"><StackPanel Margin="8" Spacing="6">
+            <Grid ColumnDefinitions="Auto,*"><RadioButton GroupName="multiKeyword" x:Name="MultiKeywordTextMode" Content="搜索文本框中的关键字：" IsChecked="True"/><TextBox Grid.Column="1" x:Name="MultiKeywordText" Text="test"/></Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto"><RadioButton GroupName="multiKeyword" x:Name="MultiKeywordFileMode" Content="搜索文件中的关键字："/><TextBox Grid.Column="1" x:Name="MultiKeywordFile"/><Button Grid.Column="2" Content="..." Click="PickMultiKeywordFile_Click"/></Grid>
+            <StackPanel Orientation="Horizontal" Spacing="18"><CheckBox x:Name="MultiIgnoreCase" Content="忽略大小写(比较慢)" IsChecked="True"/><CheckBox x:Name="MultiIncludeFile" Content="输出文件名" IsChecked="True"/></StackPanel>
+          </StackPanel></GroupBox>
+          <Border Grid.Column="1" Grid.RowSpan="4" Classes="sidebar"><StackPanel Spacing="8">
+            <TextBlock Classes="sectionTitle" Text="运行控制"/>
+            <Grid ColumnDefinitions="*,58" RowDefinitions="Auto,Auto" RowSpacing="6"><TextBlock Classes="caption" Text="总读取线程"/><TextBox Grid.Column="1" Classes="number" Width="58" x:Name="MultiReadWorkers" Text="6"/><TextBlock Grid.Row="1" Classes="caption" Text="计算线程"/><TextBox Grid.Row="1" Grid.Column="1" Classes="number" Width="58" x:Name="MultiComputeWorkers" Text="16"/></Grid>
+            <TextBlock Foreground="#667085" FontSize="10" Text="自动建议：NAS 四路，雷电 SSD 六路" TextWrapping="Wrap"/>
+            <Button Classes="primary" Content="开始搜索" Click="MultiSearch_Click"/>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="5"><Button Content="安全停止" Click="MultiSafeStop_Click"/><Button Grid.Column="1" Classes="danger" Content="强制停止" Click="MultiForceStop_Click"/></Grid>
+            <Border Background="#FFF3F2" CornerRadius="4" Padding="6"><TextBlock Foreground="#B42318" FontSize="10" Text="强制停止会丢弃队列数据" TextWrapping="Wrap"/></Border>
+            <TextBlock Classes="sectionTitle" Margin="0,4,0,0" Text="实时状态"/>
+            <Grid ColumnDefinitions="*,58" RowDefinitions="Auto,Auto" RowSpacing="5"><TextBlock Classes="caption" Text="队列块数"/><TextBox Grid.Column="1" Classes="metric" Width="58" x:Name="MultiQueue" Text="0"/><TextBlock Grid.Row="1" Classes="caption" Text="读取线程"/><TextBox Grid.Row="1" Grid.Column="1" Classes="metric" Width="58" x:Name="MultiCurrentReaders" Text="0"/></Grid>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="4"><Button Classes="compact" Content="读取 +" Click="MultiReaderAdd_Click"/><Button Grid.Column="1" Classes="compact" Content="读取 −" Click="MultiReaderSub_Click"/></Grid>
+            <Grid ColumnDefinitions="*,58" RowDefinitions="Auto" RowSpacing="5"><TextBlock Classes="caption" Text="计算线程"/><TextBox Grid.Column="1" Classes="metric" Width="58" x:Name="MultiCurrentWorkers" Text="0"/></Grid>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="4"><Button Classes="compact" Content="计算 +" Click="MultiWorkerAdd_Click"/><Button Grid.Column="1" Classes="compact" Content="计算 −" Click="MultiWorkerSub_Click"/></Grid>
+            <Grid ColumnDefinitions="*,78" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="5"><TextBlock Classes="caption" Text="读取速度"/><Label Grid.Column="1" Classes="metricLabel" Width="78" x:Name="MultiReadSpeed" Content="0"/><TextBlock Grid.Row="1" Classes="caption" Text="已读大小"/><Label Grid.Row="1" Grid.Column="1" Classes="metricLabel" Width="78" x:Name="MultiReadTotal" Content="0"/><TextBlock Grid.Row="2" Classes="caption" Text="计算速度"/><Label Grid.Row="2" Grid.Column="1" Classes="metricLabel" Width="78" x:Name="MultiComputeSpeed" Content="0"/><TextBlock Grid.Row="3" Classes="caption" Text="已计算"/><Label Grid.Row="3" Grid.Column="1" Classes="metricLabel" Width="78" x:Name="MultiComputeTotal" Content="0"/></Grid>
+          </StackPanel></Border>
+          <GroupBox Grid.Row="1" Header="计算模式"><Grid Margin="4" ColumnDefinitions="*,*,*" ColumnSpacing="6"><RadioButton GroupName="multiMode" x:Name="MultiModeLineBlock" Content="行块（大量）"/><RadioButton Grid.Column="1" GroupName="multiMode" x:Name="MultiModeTextBlock" Content="字符块（少量）" IsChecked="True"/><RadioButton Grid.Column="2" GroupName="multiMode" x:Name="MultiModeLine" Content="单行（平衡）"/></Grid></GroupBox>
+          <Grid Grid.Row="2" ColumnDefinitions="Auto,100,Auto,Auto,*" ColumnSpacing="5"><TextBlock Classes="caption" Text="文件类型"/><TextBox Grid.Column="1" x:Name="MultiTypes" Text="*.txt|*.sql|*.dic"/><Button Grid.Column="2" Content="添加文件" Click="MultiAddFiles_Click"/><Button Grid.Column="3" Content="添加目录" Click="MultiAddFolder_Click"/><CheckBox Grid.Column="4" HorizontalAlignment="Right" x:Name="MultiDeduplicateImport" Content="导入时去重"/></Grid>
+          <ListBox Grid.Row="3" Classes="fileList" x:Name="MultiFiles" SelectionMode="Multiple"/>
+          <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="6"><Button Content="从文件加载" Click="MultiLoadList_Click"/><Button Content="保存到文件" Click="MultiSaveList_Click"/><TextBlock Classes="caption" Text="文件数量："/><TextBox Classes="metric" x:Name="MultiFileCount" Text="0"/><Button Content="移除所选" Click="MultiRemoveSelected_Click"/><Button Content="清空所有" Click="MultiClear_Click"/></StackPanel>
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="多文件清理合并">
+        <Grid Margin="0,8" RowDefinitions="Auto,Auto,Auto,*,Auto" ColumnDefinitions="*,154" RowSpacing="7" ColumnSpacing="10">
+          <GroupBox Header="输出设置"><StackPanel Margin="8" Spacing="6">
+            <Grid ColumnDefinitions="Auto,*,Auto"><RadioButton GroupName="multiCleanOut" x:Name="MultiCleanOneMode" Content="清理合并到文件：" IsChecked="True"/><TextBox Grid.Column="1" x:Name="MultiCleanOutput"/><Button Grid.Column="2" Content="..." Click="PickMultiCleanOutput_Click"/></Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto"><RadioButton GroupName="multiCleanOut" x:Name="MultiCleanGroupMode" Content="清理分组到目录："/><TextBox Grid.Column="1" x:Name="MultiCleanDirectory"/><Button Grid.Column="2" Content="..." Click="PickMultiCleanDirectory_Click"/></Grid>
+            <CheckBox x:Name="MultiCleanCheckEmail" Content="单独保存非 Email 内容（较慢）"/>
+            <Grid ColumnDefinitions="Auto,*,Auto,108" ColumnSpacing="6"><TextBlock Classes="caption" Text="文件名前缀"/><TextBox Grid.Column="1" x:Name="MultiCleanPrefix" Text="file_"/><TextBlock Grid.Column="2" Classes="caption" Text="分组索引"/><ComboBox Grid.Column="3" x:Name="MultiCleanGroupIndex" SelectedIndex="0"><ComboBoxItem Content="第1-2字符"/><ComboBoxItem Content="第2-3字符"/><ComboBoxItem Content="第3-4字符"/><ComboBoxItem Content="第4-5字符"/></ComboBox></Grid>
+          </StackPanel></GroupBox>
+          <Border Grid.Column="1" Grid.RowSpan="4" Classes="sidebar"><StackPanel Spacing="8">
+            <TextBlock Classes="sectionTitle" Text="运行控制"/>
+            <Grid ColumnDefinitions="*,48" RowDefinitions="Auto,Auto" RowSpacing="6"><TextBlock Classes="caption" Text="读取线程"/><TextBox Grid.Column="1" Classes="number" Width="48" x:Name="MultiCleanReaders" Text="2"/><TextBlock Grid.Row="1" Classes="caption" Text="计算线程"/><TextBox Grid.Row="1" Grid.Column="1" Classes="number" Width="48" x:Name="MultiCleanWorkers" Text="16"/></Grid>
+            <Button Classes="primary" Content="开始清理" Click="MultiClean_Click"/>
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="5"><Button Content="安全停止" Click="MultiCleanSafeStop_Click"/><Button Grid.Column="1" Classes="danger" Content="强制停止" Click="MultiCleanForceStop_Click"/></Grid>
+            <TextBlock Classes="sectionTitle" Margin="0,5,0,0" Text="实时状态"/>
+            <Grid ColumnDefinitions="*,78" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="6"><TextBlock Classes="caption" Text="读队列"/><TextBox Grid.Column="1" Classes="metric" Width="58" x:Name="MultiCleanReadQueue" Text="0"/><TextBlock Grid.Row="1" Classes="caption" Text="写队列"/><TextBox Grid.Row="1" Grid.Column="1" Classes="metric" Width="58" x:Name="MultiCleanWriteQueue" Text="0"/><TextBlock Grid.Row="2" Classes="caption" Text="读取速度"/><Label Grid.Row="2" Grid.Column="1" Classes="metricLabel" Width="78" x:Name="MultiCleanReadSpeed" Content="0"/><TextBlock Grid.Row="3" Classes="caption" Text="已读大小"/><Label Grid.Row="3" Grid.Column="1" Classes="metricLabel" Width="78" x:Name="MultiCleanReadTotal" Content="0"/><TextBlock Grid.Row="4" Classes="caption" Text="计算速度"/><Label Grid.Row="4" Grid.Column="1" Classes="metricLabel" Width="78" x:Name="MultiCleanComputeSpeed" Content="0"/><TextBlock Grid.Row="5" Classes="caption" Text="写入速度"/><Label Grid.Row="5" Grid.Column="1" Classes="metricLabel" Width="78" x:Name="MultiCleanWriteSpeed" Content="0"/></Grid>
+          </StackPanel></Border>
+          <GroupBox Grid.Row="1" Header="清理规则"><StackPanel Margin="8" Spacing="5">
+            <CheckBox x:Name="MultiCleanEnabled" Content="启用内容清理总开关" IsChecked="True"/>
+            <Grid ColumnDefinitions="Auto,*,Auto"><CheckBox x:Name="MultiCleanPrefixOn" Content="删除指定开头的行："/><TextBox Grid.Column="1" x:Name="MultiCleanRemovePrefix"/><CheckBox Grid.Column="2" x:Name="MultiCleanPrefixIgnoreCase" Content="忽略大小写" IsChecked="True"/></Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto"><CheckBox x:Name="MultiCleanContainsOn" Content="删除包含内容的行："/><TextBox Grid.Column="1" x:Name="MultiCleanRemoveContains"/><CheckBox Grid.Column="2" x:Name="MultiCleanContainsIgnoreCase" Content="忽略大小写" IsChecked="True"/></Grid>
+            <Grid ColumnDefinitions="Auto,*"><CheckBox x:Name="MultiCleanRegexOn" Content="删除正则匹配行："/><TextBox Grid.Column="1" x:Name="MultiCleanRemoveRegex"/></Grid>
+            <Grid ColumnDefinitions="Auto,Auto,34,Auto,*" ColumnSpacing="6"><CheckBox x:Name="MultiCleanFieldsOn" Content="删除字段"/><TextBlock Grid.Column="1" Classes="caption" Text="分隔符"/><TextBox Grid.Column="2" Classes="compactInput" Width="34" x:Name="MultiCleanSeparator" Text=":"/><TextBlock Grid.Column="3" Classes="caption" Text="列号（可多个）"/><TextBox Grid.Column="4" x:Name="MultiCleanFields" Text="1,3,5"/></Grid>
+            <Grid ColumnDefinitions="Auto,40,*,Auto" ColumnSpacing="12"><CheckBox x:Name="MultiCleanShortOn" Content="删除短行，长度小于等于" IsChecked="True"/><TextBox Grid.Column="1" Classes="compactInput" Width="40" x:Name="MultiCleanShort" Text="5"/><CheckBox Grid.Column="3" x:Name="MultiCleanWhitespace" Content="删除行中间空白"/></Grid>
+            <StackPanel Orientation="Horizontal" Spacing="16"><CheckBox x:Name="MultiCleanBlank" Content="删除空行" IsChecked="True"/><CheckBox x:Name="MultiCleanTrim" Content="删除行头尾空白" IsChecked="True"/></StackPanel>
+          </StackPanel></GroupBox>
+          <Grid Grid.Row="2" ColumnDefinitions="Auto,100,Auto,Auto,*" ColumnSpacing="5"><TextBlock Classes="caption" Text="文件类型"/><TextBox Grid.Column="1" x:Name="MultiCleanTypes" Text="*.txt|*.sql|*.dic"/><Button Grid.Column="2" Content="添加文件" Click="MultiCleanAddFiles_Click"/><Button Grid.Column="3" Content="添加目录" Click="MultiCleanAddFolder_Click"/><CheckBox Grid.Column="4" HorizontalAlignment="Right" x:Name="MultiCleanDeduplicateImport" Content="导入时去重"/></Grid>
+          <ListBox Grid.Row="3" Classes="fileList" x:Name="MultiCleanFiles" SelectionMode="Multiple"/>
+          <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="6"><Button Content="从文件加载" Click="MultiCleanLoadList_Click"/><Button Content="保存到文件" Click="MultiCleanSaveList_Click"/><TextBlock Classes="caption" Text="文件数量："/><TextBox Classes="metric" x:Name="MultiCleanFileCount" Text="0"/><Button Content="移除所选" Click="MultiCleanRemoveSelected_Click"/><Button Content="清空所有" Click="MultiCleanClear_Click"/></StackPanel>
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="内容去重">
+        <Grid Margin="0,8" RowDefinitions="Auto,Auto,*,Auto" RowSpacing="7">
+          <GroupBox Header="输出与算法"><StackPanel Margin="8" Spacing="6">
+            <Grid ColumnDefinitions="Auto,*,Auto"><RadioButton GroupName="dedupOut" x:Name="DedupSameFolder" Content="输出到原文件目录，文件名后缀：" IsChecked="True"/><TextBox Grid.Column="1" x:Name="DedupSuffix" Text="_distinct"/></Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto"><RadioButton GroupName="dedupOut" x:Name="DedupNewRoot" Content="输出到新目录并保留结构："/><TextBox Grid.Column="1" x:Name="DedupRoot"/><Button Grid.Column="2" Content="..." Click="PickDedupRoot_Click"/></Grid>
+            <Grid ColumnDefinitions="Auto,*"><TextBlock Classes="caption" Text="源根目录(新目录模式)："/><TextBox Grid.Column="1" x:Name="DedupSourceRoot"/></Grid>
+            <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto" ColumnSpacing="12"><RadioButton GroupName="dedupMode" x:Name="DedupHash" Content="HashSet（保留原顺序）" IsChecked="True"/><RadioButton Grid.Column="1" GroupName="dedupMode" x:Name="DedupSort" Content="外部排序去重"/><CheckBox Grid.Column="3" x:Name="DedupIgnoreCase" Content="忽略大小写"/><CheckBox Grid.Column="4" x:Name="DedupTrim" Content="去除首尾空白" IsChecked="True"/></Grid>
+            <StackPanel Orientation="Horizontal" Spacing="6"><TextBlock Classes="caption" Text="最大同时内容(MB)："/><TextBox Classes="number" x:Name="DedupMemory" Text="4096"/><TextBlock Classes="caption" Text="最大线程数："/><TextBox Classes="number" x:Name="DedupThreads" Text="16"/></StackPanel>
+          </StackPanel></GroupBox>
+          <Grid Grid.Row="1" ColumnDefinitions="Auto,120,Auto,Auto,*,Auto,Auto" ColumnSpacing="6"><TextBlock Classes="caption" Text="文件类型"/><TextBox Grid.Column="1" x:Name="DedupTypes" Text="*.txt|*.sql|*.dic"/><Button Grid.Column="2" Content="添加文件" Click="DedupAddFiles_Click"/><Button Grid.Column="3" Content="添加目录" Click="DedupAddFolder_Click"/><CheckBox Grid.Column="4" HorizontalAlignment="Right" x:Name="DedupDeduplicateImport" Content="导入去重"/><Button Grid.Column="5" Classes="primary" Content="开始去重" Click="Dedup_Click"/><Button Grid.Column="6" Classes="danger" Content="停止" Click="DedupStop_Click"/></Grid>
+          <ListBox Grid.Row="2" Classes="fileList" x:Name="DedupFiles" SelectionMode="Multiple"/>
+          <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="6"><Button Content="从文件加载" Click="DedupLoadList_Click"/><Button Content="保存到文件" Click="DedupSaveList_Click"/><TextBlock Classes="caption" Text="文件数量："/><TextBox Classes="metric" x:Name="DedupFileCount" Text="0"/><Button Content="移除所选" Click="DedupRemoveSelected_Click"/><Button Content="清空所有" Click="DedupClear_Click"/></StackPanel>
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="文件合并">
+        <Grid Margin="0,8" RowDefinitions="Auto,Auto,*" RowSpacing="8">
+          <GroupBox Header="同组文件合并"><StackPanel Margin="8" Spacing="6">
+            <Grid ColumnDefinitions="Auto,*,Auto"><TextBlock Classes="caption" Text="源目录："/><TextBox Grid.Column="1" x:Name="MergeGroupSource"/><Button Grid.Column="2" Content="..." Click="PickMergeGroupSource_Click"/></Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto"><TextBlock Classes="caption" Text="目标目录："/><TextBox Grid.Column="1" x:Name="MergeGroupTarget"/><Button Grid.Column="2" Content="..." Click="PickMergeGroupTarget_Click"/></Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="8"><TextBlock Classes="caption" Text="源文件忽略前缀："/><TextBox Grid.Column="1" x:Name="MergeSourcePrefix"/><TextBlock Grid.Column="2" Classes="caption" Text="忽略后缀正则："/><TextBox Grid.Column="3" x:Name="MergeSourceSuffix"/></Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="8"><TextBlock Classes="caption" Text="目标忽略前缀："/><TextBox Grid.Column="1" x:Name="MergeTargetPrefix"/><TextBlock Grid.Column="2" Classes="caption" Text="忽略后缀正则："/><TextBox Grid.Column="3" x:Name="MergeTargetSuffix"/></Grid>
+            <Button Classes="primary" Content="开始同组合并" HorizontalAlignment="Right" Click="GroupMerge_Click"/>
+          </StackPanel></GroupBox>
+          <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto"><TextBlock Classes="caption" Text="按下方顺序合并到："/><TextBox Grid.Column="1" x:Name="MergeOutput"/><Button Grid.Column="2" Content="..." Click="PickMergeOutput_Click"/></Grid>
+          <Grid Grid.Row="2" RowDefinitions="Auto,*,Auto" RowSpacing="6">
+            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto" ColumnSpacing="6"><Button Content="导入文件" Click="MergeAddFiles_Click"/><Button Grid.Column="1" Content="上移" Click="MergeMoveUp_Click"/><Button Grid.Column="2" Content="下移" Click="MergeMoveDown_Click"/><CheckBox Grid.Column="3" x:Name="MergeNewline" Content="文件间补换行" IsChecked="True"/><Button Grid.Column="5" Classes="primary" Content="开始合并" Click="Merge_Click"/></Grid>
+            <ListBox Grid.Row="1" Classes="fileList" x:Name="MergeFiles" SelectionMode="Multiple"/>
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="6"><Button Content="从文件加载" Click="MergeLoadList_Click"/><Button Content="保存到文件" Click="MergeSaveList_Click"/><Button Content="移除所选" Click="MergeRemoveSelected_Click"/><Button Content="清空所有" Click="MergeClear_Click"/></StackPanel>
+          </Grid>
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="文件拆分">
+        <Grid Margin="0,8" RowDefinitions="Auto,Auto,Auto,*" RowSpacing="8">
+          <GroupBox Header="拆分规则"><StackPanel Margin="8" Spacing="6">
+            <StackPanel Orientation="Horizontal" Spacing="8"><RadioButton GroupName="splitRule" x:Name="SplitByLines" Content="按行数拆分，每文件行数：" IsChecked="True"/><TextBox Classes="number" Width="62" x:Name="SplitLines" Text="1000000"/><RadioButton GroupName="splitRule" x:Name="SplitBySize" Content="按大小拆分，每文件(MB)："/><TextBox Classes="number" Width="62" x:Name="SplitMb" Text="2048"/></StackPanel>
+            <Grid ColumnDefinitions="Auto,*,Auto"><RadioButton GroupName="splitOut" x:Name="SplitSameFolder" Content="输出到源文件目录" IsChecked="True"/><TextBlock Grid.Column="1"/><TextBlock Grid.Column="2" Text="输出文件使用 .0001 等编号"/></Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto"><RadioButton GroupName="splitOut" x:Name="SplitNewFolder" Content="输出到目录："/><TextBox Grid.Column="1" x:Name="SplitDirectory"/><Button Grid.Column="2" Content="..." Click="PickSplitDirectory_Click"/></Grid>
+          </StackPanel></GroupBox>
+          <StackPanel Grid.Row="1" Spacing="4">
+            <StackPanel Orientation="Horizontal" Spacing="6"><TextBlock Classes="caption" Text="批量拆分阈值(MB)："/><TextBox Classes="number" x:Name="SplitThreshold" Text="1024"/><TextBlock Classes="caption" Text="文件类型："/><TextBox Width="180" x:Name="SplitTypes" Text="*.txt|*.sql|*.dic"/></StackPanel>
+            <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto,Auto" ColumnSpacing="6"><Button Content="导入文件" Click="SplitAddFiles_Click"/><Button Grid.Column="1" Content="导入目录" Click="SplitAddFolder_Click"/><Button Grid.Column="2" Content="预查找" Click="SplitPreFind_Click"/><Button Grid.Column="4" Classes="primary" Content="开始拆分" Click="Split_Click"/><Button Grid.Column="5" Classes="danger" Content="停止" Click="SplitStop_Click"/></Grid>
+          </StackPanel>
+          <TextBlock Grid.Row="2" Text="待拆分文件（预查找只保留大于等于阈值的文件）"/>
+          <Grid Grid.Row="3" RowDefinitions="*,Auto" RowSpacing="6"><ListBox Classes="fileList" x:Name="SplitFiles" SelectionMode="Multiple"/><StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="6"><Button Content="从文件加载" Click="SplitLoadList_Click"/><Button Content="保存到文件" Click="SplitSaveList_Click"/><Button Content="移除所选" Click="SplitRemoveSelected_Click"/><Button Content="清空所有" Click="SplitClear_Click"/></StackPanel></Grid>
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="查找文件">
+        <Grid Margin="0,8" RowDefinitions="Auto,Auto,Auto,*,Auto" RowSpacing="7">
+          <Grid ColumnDefinitions="Auto,*,Auto"><TextBlock Classes="caption" Text="查找根目录："/><TextBox Grid.Column="1" x:Name="FindRoot"/><Button Grid.Column="2" Content="..." Click="PickFindRoot_Click"/></Grid>
+          <Grid Grid.Row="1" ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="5"><RadioButton GroupName="findMode" x:Name="FindIncludeMode" Content="列出类型：" IsChecked="True"/><TextBox Grid.Column="1" x:Name="FindIncludes" Text="*.txt|*.dic|*.sql"/><RadioButton Grid.Column="2" GroupName="findMode" x:Name="FindExcludeMode" Content="排除类型："/><TextBox Grid.Column="3" x:Name="FindExcludes" Text="*.txt|*.dic|*.sql"/></Grid>
+          <Grid Grid.Row="2" ColumnDefinitions="Auto,Auto,Auto,60,Auto,60,*,Auto,Auto" ColumnSpacing="6"><CheckBox x:Name="FindRecursive" Content="递归子目录" IsChecked="True"/><CheckBox Grid.Column="1" x:Name="FindExtensionless" Content="列出无扩展名文件" IsChecked="True"/><TextBlock Grid.Column="2" Classes="caption" Text="最小(MB)"/><TextBox Grid.Column="3" Classes="number" Width="60" x:Name="FindMin"/><TextBlock Grid.Column="4" Classes="caption" Text="最大(MB)"/><TextBox Grid.Column="5" Classes="number" Width="60" x:Name="FindMax"/><Button Grid.Column="7" Classes="primary" Content="开始查找" Click="Find_Click"/><Button Grid.Column="8" Classes="danger" Content="停止" Click="FindStop_Click"/></Grid>
+          <ListBox Grid.Row="3" Classes="fileList" x:Name="FindFiles" SelectionMode="Multiple"/>
+          <StackPanel Grid.Row="4" Spacing="6">
+            <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto,60" ColumnSpacing="6"><Button Content="从文件加载" Click="FindLoadList_Click"/><Button Grid.Column="1" Content="保存到文件" Click="FindSaveList_Click"/><Button Grid.Column="2" Content="移除选中" Click="FindRemoveSelected_Click"/><Button Grid.Column="3" Content="清空" Click="FindClear_Click"/><CheckBox Grid.Column="5" x:Name="FindDeduplicateImport" Content="导入去重"/><TextBlock Grid.Column="6" Classes="caption" Text="文件数量"/><TextBox Grid.Column="7" Classes="metric" Width="60" x:Name="FindFileCount" Text="0"/></Grid>
+            <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="5"><Button Content="送至多文件搜索" Click="FindToSearch_Click"/><Button Grid.Column="1" Content="送至多文件清理" Click="FindToClean_Click"/><Button Grid.Column="2" Content="送至内容去重" Click="FindToDedup_Click"/><Button Grid.Column="3" Content="送至文件合并" Click="FindToMerge_Click"/><Button Grid.Column="4" Content="送至文件拆分" Click="FindToSplit_Click"/></Grid>
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto"><TextBlock Classes="caption" Text="按原目录结构复制/移动到："/><TextBox Grid.Column="1" x:Name="FindDestination"/><Button Grid.Column="2" Content="..." Click="PickFindDestination_Click"/><Button Grid.Column="3" Content="复制" Click="FindCopy_Click"/><Button Grid.Column="4" Content="移动" Click="FindMove_Click"/></Grid>
+          </StackPanel>
+        </Grid>
+      </TabItem>
+
+      <TabItem Header="性能测试">
+        <Grid Margin="0,8" RowDefinitions="Auto,Auto,Auto,Auto,*" RowSpacing="8">
+          <Grid ColumnDefinitions="Auto,*,Auto"><TextBlock Classes="caption" Text="测试文件："/><TextBox Grid.Column="1" x:Name="BenchmarkFile"/><Button Grid.Column="2" Content="..." Click="PickBenchmarkFile_Click"/></Grid>
+          <StackPanel Grid.Row="1" Spacing="5"><Grid ColumnDefinitions="Auto,180,Auto,60,*" ColumnSpacing="8"><TextBlock Classes="caption" Text="关键字："/><TextBox Grid.Column="1" x:Name="BenchmarkKeyword" Text="feinir"/><TextBlock Grid.Column="2" Classes="caption" Text="计算线程："/><TextBox Grid.Column="3" Classes="number" Width="60" x:Name="BenchmarkWorkers" Text="16"/></Grid><StackPanel Orientation="Horizontal" Spacing="8"><Button Content="测试行块模式" Click="BenchmarkLineBlock_Click"/><Button Content="测试字符块模式" Click="BenchmarkTextBlock_Click"/><Button Content="测试单行模式" Click="BenchmarkLine_Click"/><Button Classes="danger" Content="停止" Click="BenchmarkStop_Click"/></StackPanel></StackPanel>
+          <GroupBox Grid.Row="2" Header="吞吐指标"><Grid Margin="4" RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="8" RowSpacing="6"><TextBlock Classes="caption" Text="读取速度："/><TextBox Grid.Column="1" Classes="metric" HorizontalAlignment="Stretch" x:Name="BenchmarkReadSpeed" Text="0"/><TextBlock Grid.Column="2" Classes="caption" Text="已读大小："/><TextBox Grid.Column="3" Classes="metric" HorizontalAlignment="Stretch" x:Name="BenchmarkReadTotal" Text="0"/><TextBlock Grid.Row="1" Classes="caption" Text="计算速度："/><TextBox Grid.Row="1" Grid.Column="1" Classes="metric" HorizontalAlignment="Stretch" x:Name="BenchmarkComputeSpeed" Text="0"/><TextBlock Grid.Row="1" Grid.Column="2" Classes="caption" Text="命中数："/><TextBox Grid.Row="1" Grid.Column="3" Classes="metric" HorizontalAlignment="Stretch" x:Name="BenchmarkMatches" Text="0"/></Grid></GroupBox>
+          <GroupBox Grid.Row="3" Header="集合性能测试（有界，避免无限占用内存）"><StackPanel Margin="4" Spacing="6"><StackPanel Orientation="Horizontal" Spacing="8"><TextBlock Classes="caption" Text="元素数量："/><TextBox Width="120" x:Name="BenchmarkSetCount" Text="1000000"/><Button Content="测试 HashSet" Click="BenchmarkHash_Click"/><Button Content="测试 SortedSet" Click="BenchmarkSorted_Click"/></StackPanel><TextBlock x:Name="BenchmarkSetResult" TextWrapping="Wrap"/></StackPanel></GroupBox>
+          <TextBox Grid.Row="4" Classes="multiline" x:Name="BenchmarkLog" IsReadOnly="True"/>
+        </Grid>
+      </TabItem>
+    </TabControl>
+    </Border>
+
+    <Border Grid.Column="1" Classes="card" Padding="12">
+    <Grid RowDefinitions="Auto,*,Auto,Auto" RowSpacing="8">
+      <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="6">
+        <StackPanel Spacing="1"><TextBlock Classes="sectionTitle" Text="输出内容"/><TextBlock Classes="muted" FontSize="10" Text="运行日志与处理结果"/></StackPanel>
+        <Button Grid.Column="1" Content="保存当前内容" Click="SaveOutput_Click"/>
+        <Button Grid.Column="2" Content="清空" Click="ClearOutput_Click"/>
+      </Grid>
+      <TextBox Grid.Row="1" Classes="multiline" x:Name="OutputText" IsReadOnly="True"/>
+      <CheckBox Grid.Row="2" x:Name="OutputResultsToUi" Content="在界面显示计算结果（关闭后仅显示运行提示，可随时切换）" IsChecked="True" IsCheckedChanged="OutputResultsToUi_Changed"/>
+      <Grid Grid.Row="3" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="6">
+        <CheckBox x:Name="OutputResultsToFile" Content="同时写入文件" IsCheckedChanged="OutputResultsToFile_Changed"/>
+        <TextBox Grid.Column="1" x:Name="OutputFile" PlaceholderText="选择结果文件路径" TextChanging="OutputFile_Changing"/>
+        <Button Grid.Column="2" Content="浏览..." Click="PickOutputFile_Click"/>
+      </Grid>
+    </Grid>
+    </Border>
+  </Grid>
+</Window>
